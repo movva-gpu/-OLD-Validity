@@ -1,0 +1,8 @@
+node_modules/
+conf.json
+*.env
+.git
+modRoles.json
+database.json
+gpt.js
+*.old
