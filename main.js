@@ -1,3 +1,5 @@
+/* eslint-disable no-redeclare */
+/* eslint-disable no-unused-vars */
 /* eslint-disable prefer-const */
 /* eslint-disable no-var */
 const { Client, Events, GatewayIntentBits } = require('discord.js');
@@ -22,122 +24,124 @@ bot.once(Events.ClientReady, b => {
 	// b.user.setAvatar('./avatar.png');
 });
 
-bot.on(Events.MessageCreate, async msg => {
+bot.on(Events.MessageCreate, msg => {
 
 	if (!msg.content.startsWith(prefix) || msg.author.bot) return;
 
-	if (startsWith(msg, 'ping')) {
-		// TODO: Remplacer par si rôle modération
-		if (authorIsDev(msg) || authorIsOwner(msg) || authorIsMod(msg)) {
-			msg.channel.send(`Between me and Discord there is ${bot.ws.ping}ms!`);
-		} else {
-			msg.channel.send('This command is reserved for devs and moderators.');
-		}
+	const args = msg.content.slice(prefix.length).trim().split(/ +/);
+	const command = args.shift().toLowerCase();
+
+	if (command === 'ping') {
+		sendMessage(`There is ${bot.ws.ping}ms between me and Discord! °^°`);
 	}
 
-	if (startsWith(msg, 'setModRole') && authorIsOwner(msg)) {
-		let modRoleID = msg.content.slice(prefix.length + 11, msg.content.length);
-		if (!modRoleID.startsWith('<@&') && modRoleID.startsWith('<@')) {
-			msg.channel.send('It seems you\'ve tried to mention a user instead of a role, please try again.\nCommand usage: `va!setModRole @modRole` or `va!setModRole <modRoleID>`');
-			return;
-		}
-		if (modRoleID.charAt(0) == '<' && modRoleID.charAt(1) == '@') {
-			modRoleID = modRoleID.slice(3, modRoleID.length - 1);
-		}
+	if (command === 'setmodrole') {
+		if (args.length == 1) {
+			if (authorIsOwner || authorIsMod) {
+				const modRoleIdentifier = args.shift();
+				let modRoleID;
+				if (modRoleIdentifier.startsWith('<@&')) {
+					modRoleID = modRoleIdentifier.slice(3, modRoleIdentifier.length - 1);
+				} else if (modRoleIdentifier.startsWith('<@')) {
+					sendMessage('It seems you\'ve tried to mention a user instead of a role °o°, please try again! ^w^\nCommand usage: `va!setModRole @modRole` or `va!setModRole <modRoleID>`');
+					return;
+				} else {
+					modRoleID = modRoleIdentifier;
+				}
 
-		msg.guild.roles.fetch(modRoleID).then(role => {
-			if (role == null || role == undefined) {
-				msg.channel.send('There was an error fecthing the role, please try again\nCommand usage: `va!setModRole @modRole` or `va!setModRole <modRoleID>`');
+				msg.guild.roles.fetch(modRoleID).then(role => {
+					if (role == null || role == undefined) {
+						sendMessage('There was an error fecthing the role. °-° Please try again! ^^\nCommand usage: `va!setModRole @modRole` or `va!setModRole <modRoleID>`');
+					}
+		
+					let guildId = msg.guildId;
+					modRoles[guildId] = modRoleID;
+					fs.writeFile('./modRoles.json', JSON.stringify(modRoles, null, 4), 'utf-8', function(error) {
+						if (error) {
+							console.error;
+						}
+					});
+					sendMessage('Moderator role defined successfully!! ^w^')
+				});
+			} else {
+				sendMessage('This command is for moderators only, sorry.. :\'(');
 			}
-
-			let guildId = msg.guildId;
-			modRoles[guildId] = modRoleID;
-			fs.writeFile('./modRoles.json', JSON.stringify(modRoles, null, 4), 'utf-8', function(error) {
-				if (error) {
-					console.error;
-				}
-			});
-		});
+		} else {
+			sendMessage('Not enough or too much arguments!! `n´ :(\nCommand usage: `va!setModRole @modRole` or `va!setModRole <modRoleID>`');
+		}
 	}
 
-	if (startsWith(msg, 'system')) {
-		let com = msg.content.slice(prefix.length + 7, msg.content.length);
-		if (com.startsWith('create')) {
+	if (command === 'system' && args.length > 0) {
+		const subCommand = args.shift().toLowerCase();
+		if (subCommand === 'create') {
 			if (db[msg.author.id] == undefined || db[msg.author.id] == null) {
-				let system = new Map(db[msg.author.id]);
-				com = com.slice(7, com.length);
-				if (com.length == 0) {
-					await msg.channel.send('The `<name>` field must be at least 1 character long.\nCommand usage: `va!system create <name> [avatar URL]` (no `_` and no spaces in the URL)');
-					return;
+				let name = '';
+				let url = '';
+				for (let i = 0; i < args.length; i++) {
+					if (!args[i].startsWith('http') && !args[i].includes('.')) {
+						name += args[i] + ' ';
+					} else {
+						url = args.slice(i).join(' ');
+						break;
+					}
 				}
+				name = name.trim();
 
-				let arg = com.split(' ');
-				if (arg.length > 2) {
-					await msg.channel.send('There cannot be more than 2 arguments(use `_` for spaces).\nCommand usage: `va!system create <name> [avatar URL]` (no `_` and no spaces in the URL)');
-					return;
-				}
-				let tmpArg;
-				while (arg[0].includes('_')) {
-					tmpArg = arg[0].replace('_', ' ');
-					arg[0] = tmpArg;
-				}
-				if (arg[0].length < 80) {
-					let date = new Date(Date.now());
-					let dateStr = date.getUTCFullYear().toString() + '-' + date.getUTCMonth().toString() + '-' + date.getUTCDate().toString() + ' ' + date.getUTCHours().toString() + ':' + date.getUTCMinutes().toString() + ':' + date.getUTCSeconds().toString() + ' UTC';
-					system = { name:arg[0], avatar:'', members:[], color:'', token:generateToken(), created_on: dateStr };
-				} else if (arg[0].length > 80) {
-					await msg.channel.send('The `<name>` field cannot be more than 80 character long.');
-					return;
-				}
-
-				if (arg[1] != null) {
-					if ((arg[1].startsWith('https://') || arg[1].startsWith('http://'))) {
-						if (arg[1].endsWith('.png') || arg[1].endsWith('.jpg') || arg[1].endsWith('.jpeg')) {
-							system.avatar = arg[1];
+				if (url.length > 0 && !url.startsWith('http') && !url.startsWith('https')) {
+					if (!url.startsWith('www.') && !url.endsWith('.com')) {
+						url = 'http://' + url;
+					}
+					if (!url.endsWith('.png') || !url.endsWith('.jpg') || !url.endsWith('.jpeg')) {
+						sendMessage('The given link isn\'t directing to an image(.png/.jpg/.jpeg only).. Sorry ;r;');
+						return;
+					}
+				} else if (url.length == 0 || url == undefined) {
+					if (msg.attachments.at(1) == null && msg.attachments.at(0) != null) {
+						if (msg.attachments.at(0).url.endsWith('.png') || msg.attachments.at(0).url.endsWith('.jpg') || msg.attachments.at(0).url.endsWith('.jpeg')) {
+							url = msg.attachments.at(0).url;
 						} else {
-							await msg.channel.send('The given link isn\'t directing to an image(.png/.jpg/.jpeg only).');
+							sendMessage('The attachment must be an image(.png/.jpg/.jpeg only).. Sorry ;n;');
 							return;
 						}
-					} else {
-						await msg.channel.send('The second argument isn\'t a link(must start with `http://` or `https://`)\n Command usage: `va!system create <name> [avatar URL]` (no `_` and no spaces in the URL, use `_` for spaces of the name)');
+					} else if (msg.attachments.at(1) != null) {
+						sendMessage('There can be only 1 attachment! Please try again ^3^');
 						return;
 					}
-				} else if (arg[1] == null && msg.attachments.at(1) == null && msg.attachments.at(0) != null) {
-					if (msg.attachments.at(0).url.endsWith('.png') || msg.attachments.at(0).url.endsWith('.jpg') || msg.attachments.at(0).url.endsWith('.jpeg')) {
-						system.avatar = msg.attachments.at(0).url;
-					} else {
-						await msg.channel.send('The attachment must be an image(.png/.jpg/.jpeg only).');
-						return;
-					}
-				} else if (msg.attachments.at(1) != null) {
-					await msg.channel.send('There can be only 1 attachment.');
-					return;
 				}
-				if (arg[1] != null && msg.attachments.at(0) != null) {
-					await msg.channel.send('Don\'t use URL and attachment simultaneously.');
-					return;
-				}
+
+				let date = new Date(Date.now());
+				let dateStr = date.getUTCFullYear().toString() + '-' + date.getUTCMonth().toString() + '-' + date.getUTCDate().toString() + ' ' + date.getUTCHours().toString() + ':' + date.getUTCMinutes().toString() + ':' + date.getUTCSeconds().toString() + ' UTC';
+
+				let system = { name:name, avatar:url, members:[], color:'', token:generateToken(), created_on:dateStr };
+
 				db[msg.author.id] = system;
 				saveDB();
+				sendMessage(`The system "${name}" has been successfully created! °w°\nTo create a new member, you can do \`va!member add\``);
 			} else {
-				await msg.channel.send('You appear to already have a system. To delete a system please use `va!system delete`.');
+				sendMessage('You already have a system, so you cannot create a new one! °<° To delete it, please use `va!system delete`. ^w^');
 			}
 		}
 	}
-});
 
-function startsWith(msg, command) {
-	return msg.content.startsWith(prefix + command);
-}
-function authorIsOwner(msg) {
-	return msg.author.id == msg.guild.ownerId;
-}
-function authorIsDev(msg) {
-	return devIDs.includes(msg.author.id);
-}
-function authorIsMod(msg) {
-	return msg.member.roles.cache.has(modRoles[msg.guildId]);
-}
+
+	function authorIsOwner() {
+		return msg.author.id == msg.guild.ownerId;
+	}
+	function authorIsDev() {
+		return devIDs.includes(msg.author.id);
+	}
+	function authorIsMod() {
+		return msg.member.roles.cache.has(modRoles[msg.guildId]);
+	}
+
+	function sendMessage(message) {
+		msg.channel.send(message)
+		.then()
+		.catch(error => {
+			console.error(error);
+		});
+	}
+});
 
 
 function saveDB() {
@@ -147,7 +151,6 @@ function saveDB() {
 		}
 	});
 }
-
 function generateToken() {
 	let t = Math.floor(Math.random() * 999999).toString(36);
 	let final = [];
