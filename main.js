@@ -2,10 +2,10 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable prefer-const */
 /* eslint-disable no-var */
-const { Client, Events, GatewayIntentBits } = require('discord.js');
+const { Client, Events, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 const fs = require('fs');
 
-const { token: token, prefix, devIDs } = require('./conf.json');
+const { token: token, prefix, devIDs, defEmbedColor, defFooter } = require('./conf.json');
 const modRoles = require('./modRoles.json');
 var db = require('./database.json');
 
@@ -71,9 +71,31 @@ bot.on(Events.MessageCreate, msg => {
 		}
 	}
 
+	if (command === 'help') {
+		if (args.shift() == undefined) {
+			const embed = createEmbed(defEmbedColor, 'Informations', null, 'Hello ^^! I\'m Validity and I\'m a Discord(TM) bot designed for plural systems/teams/communities/etc, allowing you to register a system, members of this system, groups, etc.', null, bot.user.displayAvatarURL(), defFooter)
+			.addFields([
+				{
+					name: 'What are "*plural systems*"?',
+					value: 'According to [Pluralpedia](https://pluralpedia.org/w/System), a system is the collection of people and entities, often called headmates or alters, that share a single physical plural body.',
+				},
+				{
+					name: 'What is this bot for?',
+					value: 'It serves the exact same use as [PluralKit](https://pluralkit.me), depending on a defined tag, called a proxy, a message will be replaced by a fake account, with the name and the avatar defined by the member.',
+				},
+			]);
+			sendMessage({
+				embeds: [embed],
+				reply: msg
+			});
+		} else {
+			const subCommand = args.shift().toLowerCase();
+		}
+	}
+
 	if (command === 'system' && args.length > 0) {
 		const subCommand = args.shift().toLowerCase();
-		if (subCommand === 'create') {
+		if (subCommand === 'create' && args >= 1) {
 			if (db[msg.author.id] == undefined || db[msg.author.id] == null) {
 				let name = '';
 				let url = '';
@@ -112,7 +134,7 @@ bot.on(Events.MessageCreate, msg => {
 				let date = new Date(Date.now());
 				let dateStr = date.getUTCFullYear().toString() + '-' + date.getUTCMonth().toString() + '-' + date.getUTCDate().toString() + ' ' + date.getUTCHours().toString() + ':' + date.getUTCMinutes().toString() + ':' + date.getUTCSeconds().toString() + ' UTC';
 
-				let system = { name:name, avatar:url, members:[], color:'', token:generateToken(), created_on:dateStr };
+				let system = { name:name, avatar:url, members:[], groups:[], color:'', token:generateToken(), created_on:dateStr };
 
 				db[msg.author.id] = system;
 				saveDB();
@@ -120,6 +142,8 @@ bot.on(Events.MessageCreate, msg => {
 			} else {
 				sendMessage('You already have a system, so you cannot create a new one! °<° To delete it, please use `va!system delete`. ^w^');
 			}
+		} else if (subCommand === 'create') {
+			sendMessage('Not enough or too much arguments!! `n´ :(\nCommand usage: `va!setModRole @modRole` or `va!setModRole <modRoleID>`');
 		}
 	}
 
@@ -162,6 +186,19 @@ function generateToken() {
 			}
 		}
 		return final.toString().replace(',', '').replace(',', '').replace(',', '');
+	}
+	function createEmbed(color, title, url, description, image, thumbnail, footer) {
+		return new EmbedBuilder()
+			.setColor(color)
+			.setTitle(title)
+			.setThumbnail(thumbnail)
+			.setURL(url)
+			.setDescription(description)
+			.setImage(image)
+			.setFooter({
+				text: footer,
+				iconURL: bot.user.displayAvatarURL()
+			});
 	}
 
 bot.login(token);
