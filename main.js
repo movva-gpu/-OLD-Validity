@@ -9,7 +9,14 @@ const {
 } = require('discord.js');
 const fs = require('fs');
 
-const { token: token, prefix, devIDs, defEmbedColor, defFooter } = require('./conf.json');
+const {
+	token,
+	prefix,
+	devIDs,
+	avatarURL,
+	defEmbedColor,
+	defFooter,
+} = require('./conf.json');
 const modRoles = require('./modRoles.json');
 let db = require('./database.json');
 
@@ -77,7 +84,7 @@ bot.on(Events.MessageCreate, msg => {
 
 	if (command === 'help') {
 		if (args.shift() == undefined) {
-			const infoEmbed = createEmbed(defEmbedColor, 'Informations', null, 'Hello ^^! I\'m Validity and I\'m a Discord(TM) bot designed for plural systems/teams/communities/etc, allowing you to register a system, members of this system, groups, etc.', null, bot.user.displayAvatarURL(), defFooter)
+			const infoEmbed = createEmbed(defEmbedColor, 'Informations', null, 'Hello ^^! I\'m Validity and I\'m a Discord(TM) bot designed for plural systems/teams/communities/etc, allowing you to register a system, members of this system, groups, etc.', null, avatarURL, defFooter)
 				.addFields([
 					{
 						name: 'What are "*plural systems*"?',
@@ -97,9 +104,9 @@ bot.on(Events.MessageCreate, msg => {
 			let listButtonStyle = ButtonStyle.Secondary;
 			let buttons = new ActionRowBuilder()
 				.addComponents(
-					createButton('❤️', infoButtonStyle, 'Informormations').setCustomId('info'),
+					createButton('ℹ️', infoButtonStyle, 'Informormations').setCustomId('info'),
 					createButton('📄', basicButtonStyle, "Basic Commands").setCustomId('basic'),
-					createButton('📃', listButtonStyle, 'Complete command List').setCustomId('list')
+					createButton('📜', listButtonStyle, 'Complete command List').setCustomId('list')
 				)
 
 			sendMessage(null, [infoEmbed], [buttons]);
