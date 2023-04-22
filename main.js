@@ -106,7 +106,7 @@ bot.on(Events.MessageCreate, msg => {
 				.addComponents(
 					createButton('ℹ️', infoButtonStyle, 'Informormations').setCustomId('info'),
 					createButton('📄', basicButtonStyle, "Basic Commands").setCustomId('basic'),
-					createButton('📜', listButtonStyle, 'Complete command List').setCustomId('list')
+					createButton('📜', l,istButtonStyle, 'Complete command List').setCustomId('list')
 				)
 
 			sendMessage(null, [infoEmbed], [buttons]);
