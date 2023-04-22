@@ -174,7 +174,7 @@ bot.on(Events.MessageCreate, msg => {
 					sendMessage('The given link isn\'t directing to an image(.png/.jpg/.jpeg only).. Sorry ;r;');
 					return;
 				}
-				if (url.length == 0 || url == undefined) {
+				if (url.length == 0) {
 					if (msg.attachments.at(1) == null && msg.attachments.at(0) != null) {
 						if (msg.attachments.at(0).url.endsWith('.png') || msg.attachments.at(0).url.endsWith('.jpg') || msg.attachments.at(0).url.endsWith('.jpeg')) {
 							url = msg.attachments.at(0).url;
