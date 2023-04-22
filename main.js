@@ -1,13 +1,17 @@
-/* eslint-disable no-redeclare */
-/* eslint-disable no-unused-vars */
-/* eslint-disable prefer-const */
-/* eslint-disable no-var */
-const { Client, Events, GatewayIntentBits, EmbedBuilder } = require('discord.js');
+const {
+	Client,
+	Events,
+	GatewayIntentBits,
+	EmbedBuilder,
+	ButtonBuilder,
+	ActionRowBuilder,
+	ButtonStyle,
+} = require('discord.js');
 const fs = require('fs');
 
 const { token: token, prefix, devIDs, defEmbedColor, defFooter } = require('./conf.json');
 const modRoles = require('./modRoles.json');
-var db = require('./database.json');
+let db = require('./database.json');
 
 const bot = new Client({
 	intents: [
@@ -73,29 +77,81 @@ bot.on(Events.MessageCreate, msg => {
 
 	if (command === 'help') {
 		if (args.shift() == undefined) {
-			const embed = createEmbed(defEmbedColor, 'Informations', null, 'Hello ^^! I\'m Validity and I\'m a Discord(TM) bot designed for plural systems/teams/communities/etc, allowing you to register a system, members of this system, groups, etc.', null, bot.user.displayAvatarURL(), defFooter)
-			.addFields([
-				{
-					name: 'What are "*plural systems*"?',
-					value: 'According to [Pluralpedia](https://pluralpedia.org/w/System), a system is the collection of people and entities, often called headmates or alters, that share a single physical plural body.',
-				},
-				{
-					name: 'What is this bot for?',
-					value: 'It serves the exact same use as [PluralKit](https://pluralkit.me), depending on a defined tag, called a proxy, a message will be replaced by a fake account, with the name and the avatar defined by the member.',
-				},
-			]);
-			sendMessage({
-				embeds: [embed],
-				reply: msg
+			const infoEmbed = createEmbed(defEmbedColor, 'Informations', null, 'Hello ^^! I\'m Validity and I\'m a Discord(TM) bot designed for plural systems/teams/communities/etc, allowing you to register a system, members of this system, groups, etc.', null, bot.user.displayAvatarURL(), defFooter)
+				.addFields([
+					{
+						name: 'What are "*plural systems*"?',
+						value: 'According to [Pluralpedia](https://pluralpedia.org/w/System), a system is the collection of people and entities, often called headmates or alters, that share a single physical plural body.',
+					},
+					{
+						name: 'What is this bot for?',
+						value: 'It serves the exact same use as [PluralKit](https://pluralkit.me), depending on a defined tag, called a proxy, a message will be replaced by a fake account, with the name and the avatar defined by the member.',
+					},
+				]);
+			const basicEmbed = createEmbed(defEmbedColor, 'Basic Commands', null, 'Create a system with `va!system create <system name> [avatar URL]`! °w° (you can attach the picture instead u^u)\nAdd your first member with `va!member add <name> <avatar URL>`. -3-', null, null, defFooter);
+			const listEmbed = createEmbed(defEmbedColor, 'Command List', null, 'TODO', null, null, defFooter);//TODO: Fill this one
+			
+
+			let infoButtonStyle = ButtonStyle.Primary;
+			let basicButtonStyle = ButtonStyle.Secondary;
+			let listButtonStyle = ButtonStyle.Secondary;
+			let buttons = new ActionRowBuilder()
+				.addComponents(
+					createButton('❤️', infoButtonStyle, 'Informormations').setCustomId('info'),
+					createButton('📄', basicButtonStyle, "Basic Commands").setCustomId('basic'),
+					createButton('📃', listButtonStyle, 'Complete command List').setCustomId('list')
+				)
+
+			sendMessage(null, [infoEmbed], [buttons]);
+
+			const collector = msg.channel.createMessageComponentCollector();
+			collector.on('collect', async i => {
+				if (i.customId === 'info') {
+					try {
+						infoButtonStyle = ButtonStyle.Primary;
+						basicButtonStyle = ButtonStyle.Secondary;
+						listButtonStyle = ButtonStyle.Secondary;
+						await i.update({
+							embeds: [infoEmbed],
+							components: [updateButtonStyle([ infoButtonStyle, basicButtonStyle, listButtonStyle ], buttons)]
+						});
+					} catch (err) {
+						console.error();
+					}
+				} else if (i.customId === 'basic') {
+					try {
+						infoButtonStyle = ButtonStyle.Secondary;
+						basicButtonStyle = ButtonStyle.Primary;
+						listButtonStyle = ButtonStyle.Secondary;
+						await i.update({
+							embeds: [basicEmbed],
+							components: [updateButtonStyle([ infoButtonStyle, basicButtonStyle, listButtonStyle ], buttons)]
+						});
+					} catch (err) {
+						console.error();
+					}
+				} else if (i.customId === 'list') {
+					try {
+						infoButtonStyle = ButtonStyle.Secondary;
+						basicButtonStyle = ButtonStyle.Secondary;
+						listButtonStyle = ButtonStyle.Primary;
+						await i.update({
+							embeds: [listEmbed],
+							components: [updateButtonStyle([ infoButtonStyle, basicButtonStyle, listButtonStyle ], buttons)]
+						});
+					} catch (err) {
+						console.error();
+					}
+				}
 			});
+
 		} else {
 			const subCommand = args.shift().toLowerCase();
 		}
 	}
-
-	if (command === 'system' && args.length > 0) {
+	if (command === 'system') {
 		const subCommand = args.shift().toLowerCase();
-		if (subCommand === 'create' && args >= 1) {
+		if (subCommand === 'create' && args.length >= 1) {
 			if (db[msg.author.id] == undefined || db[msg.author.id] == null) {
 				let name = '';
 				let url = '';
@@ -108,16 +164,17 @@ bot.on(Events.MessageCreate, msg => {
 					}
 				}
 				name = name.trim();
-
+				console.log(url.length, url)
 				if (url.length > 0 && !url.startsWith('http') && !url.startsWith('https')) {
 					if (!url.startsWith('www.') && !url.endsWith('.com')) {
 						url = 'http://' + url;
 					}
-					if (!url.endsWith('.png') || !url.endsWith('.jpg') || !url.endsWith('.jpeg')) {
-						sendMessage('The given link isn\'t directing to an image(.png/.jpg/.jpeg only).. Sorry ;r;');
-						return;
-					}
-				} else if (url.length == 0 || url == undefined) {
+				}
+				if (url.length > 0 && (!url.endsWith('.png') || !url.endsWith('.jpg') || !url.endsWith('.jpeg'))) {
+					sendMessage('The given link isn\'t directing to an image(.png/.jpg/.jpeg only).. Sorry ;r;');
+					return;
+				}
+				if (url.length == 0 || url == undefined) {
 					if (msg.attachments.at(1) == null && msg.attachments.at(0) != null) {
 						if (msg.attachments.at(0).url.endsWith('.png') || msg.attachments.at(0).url.endsWith('.jpg') || msg.attachments.at(0).url.endsWith('.jpeg')) {
 							url = msg.attachments.at(0).url;
@@ -142,8 +199,8 @@ bot.on(Events.MessageCreate, msg => {
 			} else {
 				sendMessage('You already have a system, so you cannot create a new one! °<° To delete it, please use `va!system delete`. ^w^');
 			}
-		} else if (subCommand === 'create') {
-			sendMessage('Not enough or too much arguments!! `n´ :(\nCommand usage: `va!setModRole @modRole` or `va!setModRole <modRoleID>`');
+		} else if (subCommand === 'create' && !(args.length >= 0)) {
+			sendMessage('Not enough or too much arguments!! ˋn´\nCommand usage: `va!setModRole @modRole` or `va!setModRole <modRoleID>`');
 		}
 	}
 
@@ -158,15 +215,18 @@ bot.on(Events.MessageCreate, msg => {
 		return msg.member.roles.cache.has(modRoles[msg.guildId]);
 	}
 
-	function sendMessage(message) {
-		msg.channel.send(message)
+	function sendMessage(message, embeds, components) {
+		msg.channel.send({
+			content: message,
+			components: components,
+			embeds: embeds
+		})
 		.then()
 		.catch(error => {
 			console.error(error);
 		});
 	}
 });
-
 
 function saveDB() {
 	fs.writeFile('./database.json', JSON.stringify(db), 'utf-8', function(error) {
@@ -186,19 +246,32 @@ function generateToken() {
 			}
 		}
 		return final.toString().replace(',', '').replace(',', '').replace(',', '');
+}
+
+function createEmbed(color, title, url, description, image, thumbnail, footer) {
+	return new EmbedBuilder()
+		.setColor(color)
+		.setTitle(title)
+		.setThumbnail(thumbnail)
+		.setURL(url)
+		.setDescription(description)
+		.setImage(image)
+		.setFooter({
+			text: footer,
+			iconURL: bot.user.displayAvatarURL()
+		});
+}
+function createButton(emoji, style, label) {
+	return new ButtonBuilder()
+		.setEmoji(emoji)
+		.setStyle(style)
+		.setLabel(label)
+}
+function updateButtonStyle(buttonStyleArray, actionRowBuilder) {
+	for (let i = 0; i < actionRowBuilder.components.length; i++) {
+		actionRowBuilder.components.at(i).setStyle(buttonStyleArray[i]);
 	}
-	function createEmbed(color, title, url, description, image, thumbnail, footer) {
-		return new EmbedBuilder()
-			.setColor(color)
-			.setTitle(title)
-			.setThumbnail(thumbnail)
-			.setURL(url)
-			.setDescription(description)
-			.setImage(image)
-			.setFooter({
-				text: footer,
-				iconURL: bot.user.displayAvatarURL()
-			});
-	}
+	return actionRowBuilder;
+}
 
 bot.login(token);
