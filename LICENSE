@@ -2,7 +2,7 @@
 
 > Version 1.0.1, April 2023
 
-> Copyright (C) 2023 Movva Moonlight
+> Copyright (C) 2023 Allenyade
 
 Everyone is Allowed to copy and distribute not-modified copies of this license document.
 
