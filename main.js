@@ -248,50 +248,47 @@ bot.on(Events.MessageCreate, msg => {
 				} else {
 
 				}
-			} else {
-				if (db[msg.author.id] != undefined) {
-					const system = System.from(db[msg.author.id]);
-					let color = defEmbedColor;
-					let systemColor = 'undefined, define one with `va!system color <color>`';
-					let avatar = undefined;
-					let banner = undefined;
-					if (system.color.length != 0) {
-						color = system.color;
-						systemColor = color;
-					}
-					if (system.banner.length != 0) {
-						banner = system.banner;
-					}
-					if (system.avatar.length != 0) {
-						avatar = system.avatar;
-					}
-					const embed = createEmbed(color, system.name, undefined, null, banner, avatar, `Token: ${system.token} • Created on: ${system.date}`)
-									.addFields([
-										{
-											name: 'Color',
-											value: systemColor,
-											inline: true
-										},
-										{
-											name: `Members (${system.members.length})`,
-											value: 'To show the list, excecute `va!system list`',
-											inline: true
-										}
-									]);
-					sendMessage(undefined, [embed])
-				}
+			} 
+		} else if (db[msg.author.id] != undefined) {
+			const system = System.from(db[msg.author.id]);
+			let color = defEmbedColor;
+			let systemColor = 'undefined, define one with `va!system color <color>`';
+			let avatar = undefined;
+			let banner = undefined;
+			if (system.color.length != 0) {
+				color = system.color;
+				systemColor = color;
 			}
+			if (system.banner.length != 0) {
+				banner = system.banner;
+			}
+			if (system.avatar.length != 0) {
+				avatar = system.avatar;
+			}
+			const embed = createEmbed(color, system.name, undefined, null, banner, avatar, `Token: ${system.token} • Created on: ${system.date}`)
+				.addFields([
+					{
+						name: 'Color',
+						value: systemColor,
+						inline: true
+					},
+					{
+						name: `Members (${system.members.length})`,
+						value: 'To show the list, excecute `va!system list`',
+						inline: true
+					}
+				]);
+			sendMessage(undefined, [embed])
 		}
 	}
 
-	if (command === 'flush' && authorIsDev) {
+	if (command === 'dbflush' && authorIsDev) {
 		db = {};
 		saveDB();
-		sendMessage('Flushed successfully! 🚽 o^o')
+		sendMessage('Database flushed successfully! 🚽 o^o')
 	}
 
 	if (command === 'kill' && authorIsDev) {
-		sendMessage('Killing bot... ;n;🔫');
 		bot.destroy();
 	}
 
