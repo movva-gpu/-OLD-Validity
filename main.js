@@ -33,7 +33,7 @@ const bot = new Client({
 
 bot.once(Events.ClientReady, b => {
 	console.log(`Client is ready. Logged in as ${b.user.id} -- ${b.user.tag}`);
-	b.user.setPresence({ status: 'idle', activities: [{ name: 'Steven Universe', type:3 }] });
+	b.user.setPresence({ status: 'idle', activities: [{ name: 'The Owl House', type:3 }] });
 	// b.user.setAvatar('./avatar.png');
 });
 
