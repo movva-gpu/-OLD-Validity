@@ -37,7 +37,7 @@ bot.once(Events.ClientReady, b => {
 
 bot.on(Events.MessageCreate, msg => {
 
-	if (!msg.content.startsWith(prefix) || msg.author.bot) return;
+	if (!msg.content.startsWith(prefix) || msg.author.bot || msg.channel == bot.user.dmChannel) return;
 
 	const args = msg.content.slice(prefix.length).trim().split(/ +/);
 	const command = args.shift().toLowerCase();
@@ -61,13 +61,13 @@ bot.on(Events.MessageCreate, msg => {
 				}
 
 				msg.guild.roles.fetch(modRoleID).then(role => {
-					if (role == null || role == undefined) {
+					if (role == undefined || role == undefined) {
 						sendMessage('There was an error fecthing the role. °-° Please try again! ^^\nCommand usage: `va!setModRole @modRole` or `va!setModRole <modRoleID>`');
 					}
 		
 					let guildId = msg.guildId;
 					modRoles[guildId] = modRoleID;
-					fs.writeFile('./modRoles.json', JSON.stringify(modRoles, null, 4), 'utf-8', function(error) {
+					fs.writeFile('./modRoles.json', JSON.stringify(modRoles, undefined, 4), 'utf-8', function(error) {
 						if (error) {
 							console.error;
 						}
@@ -84,7 +84,7 @@ bot.on(Events.MessageCreate, msg => {
 
 	if (command === 'help') {
 		if (args.shift() == undefined) {
-			const infoEmbed = createEmbed(defEmbedColor, 'Informations', null, 'Hello ^^! I\'m Validity and I\'m a Discord(TM) bot designed for plural systems/teams/communities/etc, allowing you to register a system, members of this system, groups, etc.', null, avatarURL, defFooter)
+			const infoEmbed = createEmbed(defEmbedColor, 'Informations', null, 'Hello ^^! I\'m Validity and I\'m a Discord(TM) bot designed for plural systems/teams/communities/etc, allowing you to register a system, members of this system, groups, etc.', undefined, avatarURL, defFooter)
 				.addFields([
 					{
 						name: 'What are "*plural systems*"?',
@@ -95,8 +95,8 @@ bot.on(Events.MessageCreate, msg => {
 						value: 'It serves the exact same use as [PluralKit](https://pluralkit.me), depending on a defined tag, called a proxy, a message will be replaced by a fake account, with the name and the avatar defined by the member.',
 					},
 				]);
-			const basicEmbed = createEmbed(defEmbedColor, 'Basic Commands', null, 'Create a system with `va!system create <system name> [avatar URL]`! °w° (you can attach the picture instead u^u)\nAdd your first member with `va!member add <name> <avatar URL>`. -3-', null, null, defFooter);
-			const listEmbed = createEmbed(defEmbedColor, 'Command List', null, 'TODO', null, null, defFooter);//TODO: Fill this one
+			const basicEmbed = createEmbed(defEmbedColor, 'Basic Commands', null, 'Create a system with `va!system create <system name> [avatar URL]`! °w° (you can attach the picture instead u^u)\nAdd your first member with `va!member add <name> <avatar URL>`. -3-', undefined, undefined, defFooter);
+			const listEmbed = createEmbed(defEmbedColor, 'Command List', null, 'TODO', undefined, undefined, defFooter);//TODO: Fill this one
 			
 
 			let infoButtonStyle = ButtonStyle.Primary;
@@ -109,7 +109,7 @@ bot.on(Events.MessageCreate, msg => {
 					createButton('📜', listButtonStyle, 'Complete command List').setCustomId('list')
 				)
 
-			sendMessage(null, [infoEmbed], [buttons]);
+			sendMessage(undefined, [infoEmbed], [buttons]);
 
 			const collector = msg.channel.createMessageComponentCollector();
 			collector.on('collect', async i => {
@@ -156,59 +156,142 @@ bot.on(Events.MessageCreate, msg => {
 			const subCommand = args.shift().toLowerCase();
 		}
 	}
+
 	if (command === 'system') {
-		const subCommand = args.shift().toLowerCase();
-		if (subCommand === 'create' && args.length >= 1) {
-			if (db[msg.author.id] == undefined || db[msg.author.id] == null) {
-				let name = '';
-				let url = '';
-				for (let i = 0; i < args.length; i++) {
-					if (!args[i].startsWith('http') && !args[i].includes('.')) {
-						name += args[i] + ' ';
-					} else {
-						url = args.slice(i).join(' ');
-						break;
-					}
-				}
-				name = name.trim();
-				console.log(url.length, url)
-				if (url.length > 0 && !url.startsWith('http') && !url.startsWith('https')) {
-					if (!url.startsWith('www.') && !url.endsWith('.com')) {
-						url = 'http://' + url;
-					}
-				}
-				if (url.length > 0 && (!url.endsWith('.png') || !url.endsWith('.jpg') || !url.endsWith('.jpeg'))) {
-					sendMessage('The given link isn\'t directing to an image(.png/.jpg/.jpeg only).. Sorry ;r;');
-					return;
-				}
-				if (url.length == 0) {
-					if (msg.attachments.at(1) == null && msg.attachments.at(0) != null) {
-						if (msg.attachments.at(0).url.endsWith('.png') || msg.attachments.at(0).url.endsWith('.jpg') || msg.attachments.at(0).url.endsWith('.jpeg')) {
-							url = msg.attachments.at(0).url;
+		if (args[0] != undefined) {
+			const subCommand = args.shift().toLowerCase();
+			if (subCommand === 'create' && args.length >= 1) {
+				if (db[msg.author.id] == undefined || db[msg.author.id] == undefined) {
+					let name = '';
+					let avatarUrl = '';
+					for (let i = 0; i < args.length; i++) {
+						if (!args[i].startsWith('http') && !args[i].includes('.')) {
+							name += args[i] + ' ';
 						} else {
-							sendMessage('The attachment must be an image(.png/.jpg/.jpeg only).. Sorry ;n;');
-							return;
+							avatarUrl = args.slice(i).join(' ');
+							break;
 						}
-					} else if (msg.attachments.at(1) != null) {
-						sendMessage('There can be only 1 attachment! Please try again ^3^');
+					}
+					name = name.trim();
+					if (avatarUrl.length > 0 && !avatarUrl.startsWith('http') && !avatarUrl.startsWith('https')) {
+						if (!avatarUrl.startsWith('www.') && !avatarUrl.endsWith('.com')) {
+							avatarUrl = 'http://' + avatarUrl;
+						}
+					}
+					if (avatarUrl.length > 0 && (!avatarUrl.endsWith('.png') || !avatarUrl.endsWith('.jpg') || !avatarUrl.endsWith('.jpeg'))) {
+						sendMessage('The given link isn\'t directing to an image(.png/.jpg/.jpeg only).. Sorry ;r;');
 						return;
 					}
+					if (avatarUrl.length == 0) {
+						if (msg.attachments.at(1) == undefined && msg.attachments.at(0) != undefined) {
+							if (msg.attachments.at(0).url.endsWith('.png') || msg.attachments.at(0).url.endsWith('.jpg') || msg.attachments.at(0).url.endsWith('.jpeg')) {
+								avatarUrl = msg.attachments.at(0).url;
+							} else {
+								sendMessage('The attachment must be an image(.png/.jpg/.jpeg only).. Sorry ;n;');
+								return;
+							}
+						} else if (msg.attachments.at(1) != undefined) {
+							sendMessage('There can be only 1 attachment! Please try again ^3^');
+							return;
+						}
+					}
+
+					let date = new Date(Date.now());
+					let dateStr = date.getUTCFullYear().toString() + '-' + date.getUTCMonth().toString() + '-' + date.getUTCDate().toString() + ' ' + date.getUTCHours().toString() + ':' + date.getUTCMinutes().toString() + ':' + date.getUTCSeconds().toString() + ' UTC';
+
+					//let system = { name:name, avatar:url, banner:'', members:[], groups:[], color:'', token:generateToken(), created_on:dateStr };
+					let system = new System(name, avatarUrl, '', [], [], '', generateToken(), dateStr)
+					db[msg.author.id] = system.toJSON();
+					saveDB();
+					sendMessage(`The system "${name}" has been successfully created! °w°\nTo create a new member, you can do \`va!member add\``);
+					return;
+				} else {
+					sendMessage('You already have a system, so you cannot create a new one! °<° To delete it, please use `va!system delete`. ^w^');
 				}
-
-				let date = new Date(Date.now());
-				let dateStr = date.getUTCFullYear().toString() + '-' + date.getUTCMonth().toString() + '-' + date.getUTCDate().toString() + ' ' + date.getUTCHours().toString() + ':' + date.getUTCMinutes().toString() + ':' + date.getUTCSeconds().toString() + ' UTC';
-
-				let system = { name:name, avatar:url, members:[], groups:[], color:'', token:generateToken(), created_on:dateStr };
-
-				db[msg.author.id] = system;
-				saveDB();
-				sendMessage(`The system "${name}" has been successfully created! °w°\nTo create a new member, you can do \`va!member add\``);
-			} else {
-				sendMessage('You already have a system, so you cannot create a new one! °<° To delete it, please use `va!system delete`. ^w^');
+			} else if (subCommand === 'create' && !(args.length >= 0)) {
+				sendMessage('Not enough or too much arguments!! ˋn´\nCommand usage: `va!setModRole @modRole` or `va!setModRole <modRoleID>`');
 			}
-		} else if (subCommand === 'create' && !(args.length >= 0)) {
-			sendMessage('Not enough or too much arguments!! ˋn´\nCommand usage: `va!setModRole @modRole` or `va!setModRole <modRoleID>`');
+			if (subCommand === 'show') {
+				if (args.length == 0) {
+					if (db[msg.author.id] != undefined) {
+						const system = System.from(db[msg.author.id]);
+						let color = defEmbedColor;
+						let systemColor = 'undefined, define one with `va!system color <color>`';
+						let avatar = undefined;
+						let banner = undefined;
+						if (system.color.length != 0) {
+							color = system.color;
+							systemColor = color;
+						}
+						if (system.banner.length != 0) {
+							banner = system.banner;
+						}
+						if (system.avatar.length != 0) {
+							avatar = system.avatar;
+						}
+						const embed = createEmbed(color, system.name, undefined, null, banner, avatar, `Token: ${system.token} • Created on: ${system.date}`)
+										.addFields([
+											{
+												name: 'Color',
+												value: systemColor,
+												inline: true
+											},
+											{
+												name: `Members (${system.members.length})`,
+												value: 'To show the list, excecute `va!system list`',
+												inline: true
+											}
+										]);
+						sendMessage(undefined, [embed])
+					}
+				} else {
+
+				}
+			} else {
+				if (db[msg.author.id] != undefined) {
+					const system = System.from(db[msg.author.id]);
+					let color = defEmbedColor;
+					let systemColor = 'undefined, define one with `va!system color <color>`';
+					let avatar = undefined;
+					let banner = undefined;
+					if (system.color.length != 0) {
+						color = system.color;
+						systemColor = color;
+					}
+					if (system.banner.length != 0) {
+						banner = system.banner;
+					}
+					if (system.avatar.length != 0) {
+						avatar = system.avatar;
+					}
+					const embed = createEmbed(color, system.name, undefined, null, banner, avatar, `Token: ${system.token} • Created on: ${system.date}`)
+									.addFields([
+										{
+											name: 'Color',
+											value: systemColor,
+											inline: true
+										},
+										{
+											name: `Members (${system.members.length})`,
+											value: 'To show the list, excecute `va!system list`',
+											inline: true
+										}
+									]);
+					sendMessage(undefined, [embed])
+				}
+			}
 		}
+	}
+
+	if (command === 'flush' && authorIsDev) {
+		db = {};
+		saveDB();
+		sendMessage('Flushed successfully! 🚽 o^o')
+	}
+
+	if (command === 'kill' && authorIsDev) {
+		sendMessage('Killing bot... ;n;🔫');
+		bot.destroy();
 	}
 
 
@@ -246,7 +329,7 @@ function generateToken() {
 	let t = Math.floor(Math.random() * 999999).toString(36);
 	let final = [];
 		for (let i = 0; i < 4; i++) {
-			if (t[i] != null) {
+			if (t[i] != undefined) {
 				final[i] = t[i];
 			} else {
 				final[i] = 0;
@@ -280,5 +363,38 @@ function updateButtonStyle(buttonStyleArray, actionRowBuilder) {
 	}
 	return actionRowBuilder;
 }
+
+
+class System {
+
+    name = '';
+    avatar = '';
+    banner = '';
+    members = [];
+    groups = [];
+    color = '';
+    token = '';
+    date = '';
+
+    constructor(name, avatar, banner, members, groups, color, token, date) {
+        this.name = name;
+        this.avatar = avatar;
+        this.banner = banner;
+        this.members = members;
+        this.groups = groups;
+        this.color = color;
+        this.token = token;
+        this.date = date;
+    }
+
+    toJSON() {
+        return {name: this.name, avatar: this.avatar, banner: this.banner, members: this.members, groups: this.groups, color: this.color, token: this.token, created_on: this.date}
+    }
+	
+	static from(JSON) {
+		return new System(JSON.name, JSON.avatar, JSON.banner, JSON.members, JSON.groups, JSON.color, JSON.token, JSON.created_on)
+	}
+}
+
 
 bot.login(token);
