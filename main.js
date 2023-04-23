@@ -16,6 +16,7 @@ const {
 	avatarURL,
 	defEmbedColor,
 	defFooter,
+	invitationLink
 } = require('./conf.json');
 const modRoles = require('./modRoles.json');
 let db = require('./database.json');
@@ -292,6 +293,10 @@ bot.on(Events.MessageCreate, msg => {
 	if (command === 'kill' && authorIsDev) {
 		sendMessage('Killing bot... ;n;🔫');
 		bot.destroy();
+	}
+
+	if (command === 'invite') {
+		sendMessage(invitationLink);
 	}
 
 
