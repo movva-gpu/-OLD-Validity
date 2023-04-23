@@ -1,5 +1,5 @@
 # Validity
 Discord bot for plural systems.
 It's completly inspired from pluralkit.
-Feel free to add it and test it, but since deletion commands aren't yet implemented it's kinda useless.
+Feel free to test it with your own configuration.
 License in LICENSE file
