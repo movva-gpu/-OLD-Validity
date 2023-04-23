@@ -20,6 +20,7 @@ const {
 } = require('./conf.json');
 const modRoles = require('./modRoles.json');
 let db = require('./database.json');
+let tokenIdDB = require('./token-id.json');
 
 const bot = new Client({
 	intents: [
@@ -197,12 +198,13 @@ bot.on(Events.MessageCreate, msg => {
 						}
 					}
 
-					let date = new Date(Date.now());
-					let dateStr = date.getUTCFullYear().toString() + '-' + date.getUTCMonth().toString() + '-' + date.getUTCDate().toString() + ' ' + date.getUTCHours().toString() + ':' + date.getUTCMinutes().toString() + ':' + date.getUTCSeconds().toString() + ' UTC';
-
+					const date = new Date(Date.now());
+					const dateStr = date.getUTCFullYear().toString() + '-' + date.getUTCMonth().toString() + '-' + date.getUTCDate().toString() + ' ' + date.getUTCHours().toString() + ':' + date.getUTCMinutes().toString() + ':' + date.getUTCSeconds().toString() + ' UTC';
+					const token = generateToken;
 					//let system = { name:name, avatar:url, banner:'', members:[], groups:[], color:'', token:generateToken(), created_on:dateStr };
-					let system = new System(name, avatarUrl, '', [], [], '', generateToken(), dateStr)
+					const system = new System(name, avatarUrl, '', [], [], '', token, dateStr)
 					db[msg.author.id] = system.toJSON();
+					tokenIdDB[token] = msg.author.id();
 					saveDB();
 					sendMessage(`The system "${name}" has been successfully created! °w°\nTo create a new member, you can do \`va!member add\``);
 					return;
@@ -327,6 +329,14 @@ function saveDB() {
 		}
 	});
 }
+function saveDB(tokenIdDB) {
+	fs.writeFile('./token-id.json', JSON.stringify(tokenIdDB), 'utf-8', function(error) {
+		if (error) {
+			console.error;
+		}
+	});
+}
+
 function generateToken() {
 	let t = Math.floor(Math.random() * 999999).toString(36);
 	let final = [];

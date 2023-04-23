@@ -6,3 +6,4 @@ modRoles.json
 database.json
 gpt.js
 *.old
+token-id.json

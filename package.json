@@ -1,10 +1,10 @@
 {
   "name": "validity",
-  "version": "0.1.2",
+  "version": "0.1.5",
   "description": "Discord bot for plural systems",
   "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node ."
   },
   "author": "Allenyade",
   "license": "SEE LICENSE IN \"LICENSE\" FILE",
