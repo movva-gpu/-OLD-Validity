@@ -2,8 +2,9 @@
     "token": "BOT-TOKEN",
     "prefix": "pref!",
     "devIDs": [
-        "add your id here (not yet implemented)"
+        "add your id here"
     ],
+    "allowedTokenChars": "abcdefghijklmnopqrstuvwxyz0123456789!@#$%&*()",
     "avatarURL": "https://github.com/movva-gpu/Validity/blob/master/avatar.png?raw=true",
     "defEmbedColor": "#C01O4",
     "defFooter": "IM A FOOTER",

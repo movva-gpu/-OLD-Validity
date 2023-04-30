@@ -7,3 +7,4 @@ database.json
 gpt.js
 *.old
 token-id.json
+.eslintrc.json
