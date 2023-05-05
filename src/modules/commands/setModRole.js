@@ -7,7 +7,7 @@ module.exports = {
   name: 'Set mod role',
   desc: 'Sets the moderator role for the bot.',
   usage: 'va!setmodrole <roleID/@role>',
-  execute(args, msg) {
+  execute (args, msg) {
     const modRoleIdentifier = args.shift();
 				let modRoleID;
 				if (modRoleIdentifier.startsWith('<@&')) {
@@ -23,10 +23,10 @@ module.exports = {
 					if (role == undefined || role == undefined) {
 						sendPartialMessage('There was an error fecthing the role. °-° Please try again! ^^\nCommand usage: `va!setModRole @modRole` or `va!setModRole <modRoleID>`', msg.channel);
 					}
-		
+
 					let guildId = msg.guildId;
 					modRoles[guildId] = modRoleID;
-					fs.writeFile('./modRoles.json', JSON.stringify(modRoles, undefined, 4), 'utf-8', function(error) {
+					fs.writeFile('./modRoles.json', JSON.stringify(modRoles, undefined, 4), 'utf-8', function (error) {
 						if (error) {
 							console.error;
 						}

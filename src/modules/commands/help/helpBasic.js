@@ -16,10 +16,10 @@ module.exports = {
     usage: 'va!help <command>',
     /**
      * @function
-     * @param {Array} args 
+     * @param {Array} args
      * @param {Message} msg
     */
-    excecute(msg) {
+    excecute (msg) {
         const infoEmbed = createEmbed(defEmbedColor, 'Informations', null, 'Hello ^^! I\'m Validity and I\'m a Discord(TM) bot designed for plural systems/teams/communities/etc, allowing you to register a system, members of this system, groups, etc.', undefined, avatarURL, defFooter)
             .addFields([
                 {
@@ -29,7 +29,7 @@ module.exports = {
                 {
                     name: 'What is this bot for?',
                     value: 'It serves the exact same use as [PluralKit](https://pluralkit.me), depending on a defined tag, called a proxy, a message will be replaced by a fake account, with the name and the avatar defined by the member.',
-                },
+                }
             ]);
         const basicEmbed = createEmbed(defEmbedColor, 'Basic Commands', null, 'Create a system with `va!system create <system name> [avatar URL]`! °w° (you can attach the picture instead u^u)\nAdd your first member with `va!member add <name> <avatar URL>`. -3-', undefined, undefined, defFooter);
         const listEmbed = createEmbed(defEmbedColor, 'Command List', null, null, undefined, undefined, defFooter)
@@ -47,7 +47,7 @@ module.exports = {
                     value: `${setModRole.desc}\nUsage: \`${setModRole.usage}\``
                 }
             ]);
-    
+
         let infoButtonStyle = ButtonStyle.Primary;
         let basicButtonStyle = ButtonStyle.Secondary;
         let listButtonStyle = ButtonStyle.Secondary;
@@ -57,9 +57,9 @@ module.exports = {
                 createButton('📄', basicButtonStyle, "Basic Commands").setCustomId('basic'),
                 createButton('📜', listButtonStyle, 'Complete command List').setCustomId('list')
             );
-    
+
         sendFullMessage(undefined, [infoEmbed], [buttons], msg.channel);
-    
+
         const collector = msg.channel.createMessageComponentCollector();
         collector.on('collect', async i => {
         if (i.customId === 'info') {

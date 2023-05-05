@@ -10,7 +10,7 @@ const bot = new Client({ intents: [
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.MessageContent,
-		GatewayIntentBits.GuildMembers,
+		GatewayIntentBits.GuildMembers
 	]});
 
 const help = require('./modules/commands/help/helpBasic.js');
@@ -82,7 +82,7 @@ bot.on(Events.MessageCreate, msg => {
 				} else {
 					sendPartialMessage('There shouln\'t be any any arguments on this command! :p\n' + `Command usage: \`${system.show.usage}\``, msg.channel);
 				}
-			} 
+			}
 		} else if (db[msg.author.id] != undefined) {
 			system.show.execute(msg, db, tokenIdDB);
 		}
@@ -91,7 +91,7 @@ bot.on(Events.MessageCreate, msg => {
 	if (command === 'dbflush' && authorIsDev(msg)) {
 		const DBs = dbFlush.execute(msg, db, tokenIdDB);
 		db = DBs.db;
-		tokenIdDB = DBs.tokenIdDB; 
+		tokenIdDB = DBs.tokenIdDB;
 	}
 
 	if (command === 'kill' && authorIsDev(msg)) {
