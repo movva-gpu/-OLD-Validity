@@ -45,7 +45,7 @@ module.exports = {
                 {
                     name: setModRole.name,
                     value: `${setModRole.desc}\nUsage: \`${setModRole.usage}\``
-                },
+                }
             ]);
     
         let infoButtonStyle = ButtonStyle.Primary;
