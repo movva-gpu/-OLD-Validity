@@ -9,8 +9,10 @@ module.exports = {
     /**
     * @function
     * @param {Message} msg
+    * @param {object} db
+    * @param {object} tokenIdDB
     */
-    execute(msg, db, tokenIdDB) {
+    execute (msg, db, tokenIdDB) {
         db = {};
         tokenIdDB = {};
         saveDB(db);

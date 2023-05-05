@@ -6,7 +6,7 @@ module.exports = {
     name: 'Show system',
     desc: 'Shows the information of a system',
     usage: 'va!system show [token]',
-    execute(msg, db, tokenIdDB) {
+    execute (msg, db, tokenIdDB) {
         const system = System.from(db[msg.author.id]);
         let color = defEmbedColor;
         let systemColor = 'undefined, define one with `va!system color <color>`';
@@ -22,7 +22,7 @@ module.exports = {
         if (system.avatar.length != 0) {
             avatar = system.avatar;
         }
-        
+
         const embed = createEmbed(color, system.name, undefined, null, banner, avatar, `Token: ${system.token} • Created on: ${system.date}`)
                         .addFields([
                             {

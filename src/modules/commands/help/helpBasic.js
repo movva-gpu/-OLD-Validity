@@ -16,9 +16,8 @@ module.exports = {
     usage: 'va!help <command>',
     /**
      * @function
-     * @param {Array} args
      * @param {Message} msg
-    */
+     */
     excecute (msg) {
         const infoEmbed = createEmbed(defEmbedColor, 'Informations', null, 'Hello ^^! I\'m Validity and I\'m a Discord(TM) bot designed for plural systems/teams/communities/etc, allowing you to register a system, members of this system, groups, etc.', undefined, avatarURL, defFooter)
             .addFields([

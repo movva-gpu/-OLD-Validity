@@ -9,12 +9,12 @@ module.exports = {
     usage: '`va!create <name> [avatarURL]` You can also attach the image (the avatar won\'t work anymore if you delete the message. :3',
     /**
      * @function
-     * @param {Array} args 
+     * @param {Array} args
      * @param {Message} msg
      * @param {object} db
      * @param {object} tokenIdDB
     */
-    execute(args, msg, db, tokenIdDB) {
+    execute (args, msg, db, tokenIdDB) {
         let name = '';
         let avatarUrl = '';
         for (let i = 0; i < args.length; i++) {

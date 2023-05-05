@@ -15,7 +15,7 @@ class System {
      * @param {string} token - The token to identify the system
      * @param {string} date - The date the system was created
      */
-    constructor(name, avatar, banner, members, groups, color, token, date) {
+    constructor (name, avatar, banner, members, groups, color, token, date) {
         this.name = name;
         this.avatar = avatar;
         this.banner = banner;
@@ -31,10 +31,10 @@ class System {
      * @function
      * @returns {object} The System instance as a JSON object
      */
-    toJSON() {
+    toJSON () {
         return {name: this.name, avatar: this.avatar, banner: this.banner, members: this.members, groups: this.groups, color: this.color, token: this.token, created_on: this.date};
     }
-    
+
     /**
      * Creates a new System instance from a JSON object
      * @function
@@ -42,7 +42,7 @@ class System {
      * @param {object} JSON - The JSON object to create the System instance from
      * @returns {System} The new System instance
      */
-    static from(JSON) {
+    static from (JSON) {
         return new System(JSON.name, JSON.avatar, JSON.banner, JSON.members, JSON.groups, JSON.color, JSON.token, JSON.created_on);
     }
 }
@@ -64,7 +64,7 @@ class Member {
      * @param {string} token - The token to identify the member
      * @param {string} date - The date the member was created
      */
-    constructor(name, displayname, desc, pronouns, avatar, banner, color, token, date) {
+    constructor (name, displayname, desc, pronouns, avatar, banner, color, token, date) {
         this.name = name;
         this.displayname = displayname;
         this.desc = desc;
@@ -81,10 +81,10 @@ class Member {
      * @function
      * @returns {object} The Member instance as a JSON object
      */
-    toJSON() {
+    toJSON () {
         return {name: this.name, displayname: this.displayname, desc: this.desc, pronouns: this.pronouns, avatar: this.avatar, banner: this.banner, color: this.color, token: this.token, created_on: this.date};
     }
-    
+
     /**
      * Creates a new Member instance from a JSON object
      * @function
@@ -92,7 +92,7 @@ class Member {
      * @param {object} JSON - The JSON object to create the Member instance from
      * @returns {Member} The new Member instance
      */
-    static from(JSON) {
+    static from (JSON) {
         return new Member(JSON.name, JSON.displayname, JSON.desc, JSON.pronouns, JSON.avatar, JSON.banner, JSON.color, JSON.token, JSON.created_on);
     }
 }
@@ -108,12 +108,12 @@ class Group {
      * @param {string} desc - Description of the group
      * @param {string} avatar - The URL of the group's avatar
      * @param {string} banner - The URL of the group's banner
-     * @param {Array<string>} members - The members of the group, identified by an Array of tokens  
+     * @param {Array<string>} members - The members of the group, identified by an Array of tokens
      * @param {string} color - The color of the group
      * @param {string} token - The token to identify the group
      * @param {string} date - The date the group was created
      */
-    constructor(name, desc, avatar, banner, members, color, token, date) {
+    constructor (name, desc, avatar, banner, members, color, token, date) {
         this.name = name;
         this.desc = desc;
         this.avatar = avatar;
@@ -129,10 +129,10 @@ class Group {
      * @function
      * @returns {object} The Group instance as a JSON object
      */
-    toJSON() {
+    toJSON () {
         return {name: this.name, displayname: this.displayname, desc: this.desc, pronouns: this.pronouns, avatar: this.avatar, banner: this.banner, members: this.members, color: this.color, token: this.token, created_on: this.date};
     }
-    
+
     /**
      * Creates a new Group instance from a JSON object
      * @function
@@ -140,7 +140,7 @@ class Group {
      * @param {object} JSON - The JSON object to create the Group instance from
      * @returns {Group} The new Group instance
      */
-    static from(JSON) {
+    static from (JSON) {
         return new Group(JSON.name, JSON.displayname, JSON.desc, JSON.pronouns, JSON.avatar, JSON.banner, JSON.members, JSON.color, JSON.token, JSON.created_on);
     }
 }

@@ -4,9 +4,14 @@ const { sendPartialMessage } = require('../globalFunctions.js');
 const modRoles = require('../../../data/modRoles.json');
 
 module.exports = {
-  name: 'Set mod role',
-  desc: 'Sets the moderator role for the bot.',
-  usage: 'va!setmodrole <roleID/@role>',
+	name: 'Set mod role',
+	desc: 'Sets the moderator role for the bot.',
+	usage: 'va!setmodrole <roleID/@role>',
+	/**
+     * @function
+     * @param {Array} args
+     * @param {Message} msg
+	 */
   execute (args, msg) {
     const modRoleIdentifier = args.shift();
 				let modRoleID;
