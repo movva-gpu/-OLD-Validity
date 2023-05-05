@@ -28,7 +28,7 @@ module.exports = {
                 {
                     name: 'Special thanks',
                     value: '• @Ske#6201 for PluralKit\n• Dana Terrace for *The Owl House* (I just put that here because I love that show, it changed me forever (in a good way))\n• Myself for not giving up this project ~~(yet)~~.'
-                },
+                }
             ]);
         sendFullMessage(undefined, [ creditEmbed ], undefined, msg.channel);
     }
