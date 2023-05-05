@@ -23,6 +23,8 @@ const system = {
 const dbFlush = require('./modules/commands/dbFlush.js');
 const setModRole = require('./modules/commands/setModRole');
 
+const credits = require('./modules/commands/misc/credits.js');
+
 bot.once(Events.ClientReady, b => {
 	console.log(`Client is ready. Logged in as ${b.user.id} -- ${b.user.tag}`);
 	b.user.setPresence({ status: 'idle', activities: [{ name: 'The Owl House', type:3 }] });
@@ -86,6 +88,10 @@ bot.on(Events.MessageCreate, msg => {
 		} else if (db[msg.author.id] != undefined) {
 			system.show.execute(msg, db, tokenIdDB);
 		}
+	}
+
+	if (command === 'credits') {
+		credits.execute(msg);
 	}
 
 	if (command === 'dbflush' && authorIsDev(msg)) {
