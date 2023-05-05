@@ -2,7 +2,7 @@
   "name": "validity",
   "version": "0.2.0",
   "description": "Discord bot for plural systems",
-  "main": "main.js",
+  "main": "./src/main.js",
   "scripts": {
     "test": "node ."
   },

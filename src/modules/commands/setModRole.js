@@ -1,7 +1,7 @@
 const fs = require('fs');
 
 const { sendPartialMessage } = require('../globalFunctions.js');
-const modRoles = require('../../../resources/modRoles.json');
+const modRoles = require('../../../data/modRoles.json');
 
 module.exports = {
   name: 'Set mod role',

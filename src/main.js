@@ -1,27 +1,17 @@
-const {
-	Client,
-	Events,
-	GatewayIntentBits
-} = require('discord.js');
+const { Client, Events, GatewayIntentBits } = require('discord.js');
 
-const {
-	token,
-	prefix,
-	invitationLink
-} = require('./resources/conf.json');
+const { token, prefix, invitationLink } = require('../config/conf.json');
 
 const { sendPartialMessage, authorIsDev, authorIsMod, authorIsOwner } = require('./modules/globalFunctions.js');
-let db = require('./resources/database.json');
-let tokenIdDB = require('./resources/token-id.json');
+let db = require('../data/database.json');
+let tokenIdDB = require('../data/token-id.json');
 
-const bot = new Client({
-	intents: [
+const bot = new Client({ intents: [
 		GatewayIntentBits.Guilds,
 		GatewayIntentBits.GuildMessages,
 		GatewayIntentBits.MessageContent,
 		GatewayIntentBits.GuildMembers,
-	],
-});
+	]});
 
 const help = require('./modules/commands/help/helpBasic.js');
 
@@ -109,7 +99,7 @@ bot.on(Events.MessageCreate, msg => {
 	}
 
 	if (command === 'invite') {
-		sendPartialMessage(invitationLink, msg.channel);
+		sendPartialMessage('Here\'s the invitation link:' + invitationLink, msg.channel);
 	}
 });
 

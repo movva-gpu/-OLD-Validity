@@ -3,6 +3,13 @@ const { ButtonStyle, ActionRowBuilder } = require('discord.js');
 const { avatarURL, defEmbedColor, defFooter } = require('../../../../config/conf.json');
 const { createEmbed, createButton, sendFullMessage, updateButtonStyle } = require('../../globalFunctions.js');
 
+const system = {
+	create: require('../system/create.js'),
+	show: require('../system/show.js')
+};
+
+const setModRole = require('../setModRole.js');
+
 module.exports = {
     name: 'Help',
     desc: 'The help command, it can be also used with an argument.',
@@ -25,8 +32,21 @@ module.exports = {
                 },
             ]);
         const basicEmbed = createEmbed(defEmbedColor, 'Basic Commands', null, 'Create a system with `va!system create <system name> [avatar URL]`! °w° (you can attach the picture instead u^u)\nAdd your first member with `va!member add <name> <avatar URL>`. -3-', undefined, undefined, defFooter);
-        const listEmbed = createEmbed(defEmbedColor, 'Command List', null, 'TODO', undefined, undefined, defFooter);//TODO: Fill this one
-    
+        const listEmbed = createEmbed(defEmbedColor, 'Command List', null, null, undefined, undefined, defFooter)
+            .addFields([
+                {
+                    name: 'Help',
+                    value: 'The help command, it can be also used with an argument.\nUsage: `va!help <command>`'
+                },
+                {
+                    name: 'System commands:',
+                    value: `• Create: ${system.create.desc}\n Usage: ${system.create.usage}\n• Show: ${system.show.desc}\n U,,,,,sage: \`${system.show.usage}\``
+                },
+                {
+                    name: setModRole.name,
+                    value: `${setModRole.desc}\nUsage: \`${setModRole.usage}\``
+                },
+            ]);
     
         let infoButtonStyle = ButtonStyle.Primary;
         let basicButtonStyle = ButtonStyle.Secondary;
