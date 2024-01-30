@@ -1,23 +1,7 @@
-# PUBLIC -BUT GIMME CREDIT AND MONEY- LICENSE
+Copyright © 2024 Danyella Strikann
 
-> Version 1.0.1, April 2023
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-> Copyright (C) 2023 Allenyade
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
-Everyone is Allowed to copy and distribute not-modified copies of this license document.
-
-> TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
-
-1. You can do what you want with the work, but credit isn't an option.
-	
-	The said credit must be visible, not after 999 lines - or more - of text.
-
-2. If you make money with a fork of this work, or a work of yours that is mostly based on this work, you must share money to the original creator of the work. The amount is 30%.
-	
-	The amount can be decreased by the creator of this work, or if you're rich, thanks to your modified work, it can be increased up. The amount has to be written and signed by both parts.
-
-3. Code is provided with no warranty. If you find a problem, it's not creator's fault, however if you fix it, you must submit a [bug report](https://www.chiark.greenend.org.uk/~sgtatham/bugs.html), and you will have to be credited.
-
-	Second line of article 1 applies to the credit.
-
-4. Finally, don't make neither the code nor the resources yours. Here is [how to cite a repo](https://academia.stackexchange.com/a/172780). If you're not using Git, a comment giving attribution can be an alternative.
+THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
